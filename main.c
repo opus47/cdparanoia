@@ -38,6 +38,8 @@
 #include "version.h"
 #include "header.h"
 
+#include <json-c/json.h>
+
 extern int analyze_cache(cdrom_drive *d, FILE *progress, FILE *log, int speed);
 
 static long parse_offset(cdrom_drive *d, char *offset, int begin){
@@ -163,7 +165,7 @@ static long parse_offset(cdrom_drive *d, char *offset, int begin){
 
 }
 
-static void display_toc(cdrom_drive *d){
+static void text_toc(cdrom_drive *d){
   long audiolen=0;
   int i;
   report("\nTable of contents (audio tracks only):\n"
@@ -189,6 +191,42 @@ static void display_toc(cdrom_drive *d){
 	 audiolen,(int)(audiolen/(60*75)),(int)((audiolen/75)%60),
 	 (int)(audiolen%75));
   report(" ");
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Dump a json representation of the TOC as an array of integers representing
+ * the length in seconds of each track e.g, [99, 147, 211, 183].
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+static void json_toc(cdrom_drive *d) {
+
+  struct json_object *arr = json_object_new_array();
+
+  for(int i=1; i<=d->tracks; i++){
+    if(cdda_track_audiop(d,i)>0) {
+      long sec=cdda_track_firstsector(d,i);
+      long off=cdda_track_lastsector(d,i)-sec+1;
+
+      int mins = (int)(off/(60*75));
+      int secs = (int)((off/74)%60) + 1;
+
+      json_object_array_add(arr, json_object_new_int(mins*60 + secs));
+
+    }
+  }
+
+  printf("%s\n", json_object_to_json_string(arr));
+
+}
+
+static void display_toc(cdrom_drive *d, int json_format) {
+
+  if(json_format) {
+    json_toc(d);
+  }
+  else {
+    text_toc(d);
+  }
+
 }
 
 static void usage(FILE *f){
@@ -220,6 +258,7 @@ VERSION"\n"
 "                                    filename cdparanoia.log\n"
 "  -V --version                    : print version info and quit\n"
 "  -Q --query                      : autosense drive, query disc and quit\n"
+"  -J --json                       : modifier to -Q to output in json\n"
 "  -B --batch                      : 'batch' mode (saves each track to a\n"
 "                                    separate file.\n"
 "  -s --search-for-drive           : do an exhaustive search for drive\n"
@@ -607,7 +646,7 @@ static void callback(long inpos, int function){
     memset(dispcache,' ',graph);
 }
 
-const char *optstring = "escCn:o:O:d:g:k:S:prRwafvqVQhZz::YXWBi:Tt:l::L::A";
+const char *optstring = "escCn:o:O:d:g:k:S:prRwafvqVQJhZz::YXWBi:Tt:l::L::A";
 
 struct option options [] = {
 	{"stderr-progress",no_argument,NULL,'e'},
@@ -634,6 +673,7 @@ struct option options [] = {
 	{"quiet",no_argument,NULL,'q'},
 	{"version",no_argument,NULL,'V'},
 	{"query",no_argument,NULL,'Q'},
+	{"json",no_argument,NULL,'J'},
 	{"help",no_argument,NULL,'h'},
 	{"analyze-drive",no_argument,NULL,'A'},
 	{"disable-paranoia",no_argument,NULL,'Z'},
@@ -687,6 +727,7 @@ int main(int argc,char *argv[]){
   int output_type=1; /* 0=raw, 1=wav, 2=aifc */
   int output_endian=0; /* -1=host, 0=little, 1=big */
   int query_only=0;
+  int json_format=0;
   int batch=0,i;
   int run_cache_test=0;
 
@@ -790,6 +831,9 @@ int main(int argc,char *argv[]){
       fprintf(stderr,VERSION);
       fprintf(stderr,"\n");
       exit(0);
+      break;
+    case 'J':
+      json_format=1;
       break;
     case 'Q':
       query_only=1;
@@ -1072,10 +1116,10 @@ int main(int argc,char *argv[]){
     return 1;
   }
 
-
   /* Dump the TOC */
-  if(query_only || verbose)display_toc(d);
+  if(query_only || verbose)display_toc(d, json_format);
   if(query_only)exit(0);
+
 
   /* bias the disc.  A hack.  Of course. */
   /* we may need to read before or past user area; this is never

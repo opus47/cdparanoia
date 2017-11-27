@@ -60,6 +60,8 @@ fi
 AC_CHECK_HEADERS(linux/sbpcd.h, SBPCD_H="-DSBPCD_H='1' ")
 AC_CHECK_HEADERS(linux/ucdrom.h, UCDROM_H="-DUCDROM_H='1' ")
 
+AC_CHECK_LIB(json-c, json_object_new_array)
+
 AC_PROG_MAKE_SET
 AC_C_CONST
 
