@@ -11,3 +11,6 @@ configure
 *.so
 *.guess
 *.sub
+Makefile
+cdparanoia-3.pc
+
