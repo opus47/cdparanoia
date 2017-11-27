@@ -1,0 +1,211 @@
+cdparanoia III release 10.2 README
+[September 11, 2008]
+
+Monty <monty@xiph.org>
+
+This CDDA reader distribution ('cdparanoia') reads audio from the
+CDROM directly as data, with no analog step between, and writes the
+data to a file or pipe as .wav, .aifc or as raw 16 bit linear PCM.
+
+These are installation notes; for lots of other cdparanoia related
+information, see:
+
+http://www.xiph.org/paranoia/
+
+COPYING
+=======
+
+cdparanoia (the command line tool) is released under the GPLv2.  The
+interface and paranoia libraries are covered by the LGPLv2.1.
+
+Requirements
+============
+
+1. A CDDA capable CDROM drive (ATAPI, SCSI, or proprietary)
+
+2. For proprietary drives:
+   2a. kernel support for the particular CDROM in use
+   
+   For ATAPI CDROM drives:
+
+   Best:
+   2b. IDE cdrom (ATAPI) and SG_IO support (normal in 2.6 kernels)
+
+	(*or*)
+
+   Second best: (kernels older than 2.6)
+   2c. IDE-SCSI host adaptor emulation 
+   2d. SCSI cdrom support (optional)
+   2e. kernel support for the generic SCSI interface and proper device 
+	(/dev/sg?) files in /dev. Most distributions already have the 
+	/dev/sg? files.  devfs [supported] sets this up automagically.
+
+	(*or*)
+
+   Works, but can be cranky: (kernels older than 2.6)
+   2f. IDE cdrom (ATAPI) support without SG_IO, uses old read ioctl.
+
+
+   For SCSI CDROM drives:
+
+   2g. SCSI cdrom and SG_IO support (normal in 2.6 kernels)
+       
+       (*or*)
+
+   2h. kernel support for the generic SCSI interface and proper device 
+	(/dev/sg?) files in /dev. Most distributions already have the 
+	/dev/sg? files. (kernels older than 2.6)
+
+3. A Linux 2.4.x, 2.5.x or 2.6.x kernel 
+
+Timing changes as of cdparanoia 10.2 likely mandate the use of a 2.4
+or later kernel (tested).  Older kernels may be missing the realtime
+clock infrastructure now needed for the beefed up cache paranoia added
+to 10.2.
+
+Cdparanoia does not require threading, IPC or sound card support.
+
+Compiling cdparanoia
+==================
+
+To build the cdparanoia utility:
+
+	./configure
+	make all
+	
+This will compile cdparanoia and the shared paranoia libs; make
+install (as root) will install it. This version uses shared paranoia
+libs; you can still build the static version as follows:
+
+	./configure
+	make all STATIC=TRUE
+
+Unlike cdda2wav and readcdda, cdparanoia is smart enough to find CDROM
+drives and the appropriate interfaces automatically; if you have only
+one CDROM drive, you'll not need to worry about it.  If your machine
+has more than one CDROM drive and cdparanoia finds the wrong one,
+you'll need to tell it which device to use on the command line (see
+the man page and Troubleshooting below).
+
+To build the cdda_interface.a and cdda_paranoia.a libraries:
+
+	./configure
+	make lib
+
+The .so shared libraries can be built as follows:
+
+	./configure
+	make slib
+
+Other build notes (such as building and using a debugging version of
+cdparanoia to aid me in tracking down any trouble) can be found on the
+Cdparanoia web site at the URL given above.
+
+Additional installation notes
+=============================
+
+Most Linux setups automagically perform the steps described below. The
+list is useful for doublechecking, or for setting up very old linux
+installs (pre-2002).
+
+(for SCSI devices)
+
+  Cdparanoia requires either:
+  1. SCSI cdrom support with SG_IO support or 
+  2. the generic SCSI interface.  
+
+  In new kernels, SG_IO support is standard.  On kernels older than
+  2.6, you will need a kernel with compiled-in or module-supplied sg
+  interface.  In case of a module, this has to be loaded ('modprobe
+  sg'; usually done in boot time scripts).  This can be verified with
+  'cat /proc/devices'. It should have a line under Character devices:
+  21 sg
+
+  When using the generic SCSI interface, cdparanoia also uses (but
+  doesn't really require) the kernel SCSI cdrom driver, ie, a kernel
+  with compiled-in or module-supplied cdrom support. In case of a
+  module, this has to be loaded ('modprobe sr_mod'; again, usually
+  part of boot up scripts).  This can be verified with 'cat
+  /proc/devices'. It should have a line under Block devices: 11 sr
+
+  If the modules are properly configured but not currently loaded, 
+  cdparanoia will trigger loading during its autoscanning.
+
+  In the /dev directory there have to be these descriptors:
+  br--------   1 cduser   user      11,   0 Jan 23  1995 sr0
+  br--------   1 cduser   user      11,   1 Mar 24  1993 sr1
+  etc...
+
+  and
+  crw-------   1 cduser   user      21,   0 Aug 27  1995 sga
+  crw-------   1 cduser   user      21,   1 Aug 27  1995 sgb
+  crw-------   1 cduser   user      21,   2 Aug 27  1995 sgc
+  etc...
+
+  and a link named 'cdrom' to the cdrom drive used.  The link can be
+  to the cdrom device *or* the generic device.  The link isn't required,
+  but it will speed autodetection.
+
+  Permissions and ownership can be changed at will, of course.
+  Here access is permitted only to user 'cduser'.
+
+(for ATAPI and proprietary cdrom devices)
+
+  The kernel must have compiled-in or module-supplied cdrom support.
+  In case of a module, this has to be loaded ('modprobe <modulename>';
+  this is normally included in the boot-up scripts).
+  This can be verified with 'cat /proc/devices'. It should
+  have a line under Block devices:
+  <major> <name of cdrom driver>
+
+  In the /dev directory there have to be these descriptors:
+  br--------   1 cduser   user <major>,   0 Jan 23  1995 <cdrom device 1>
+  br--------   1 cduser   user <major>,   1 Mar 24  1993 <cdrom device 2>
+  etc...
+
+  a link named 'cdrom' to the cdrom drive used will speed up the
+  process of finding the cdrom (cdparanoia checks for the link first)
+
+  These steps are usually performed automatically during the
+  installation of Linux.
+
+(for ATAPI cdrom drives using SG_IO support)
+
+  There's nothing much to do; make sure the kernel is actually
+  compiled with SG_IO enabled, the appropriate drive entry appears in
+  /dev/, and that the device is r/w accessible by the user.  In modern
+  distros, all these steps are automagic.
+
+(for ATAPI cdrom drives using IDE-SCSI host adaptor emulation)
+
+  Overall, the instructions are the same as for normal SCSI drives.
+  To cause the CDROM drive to appear as a SCSI device instead of ATAPI,
+  the kernel must be compiled *with* SCSI and generic SCSI support, and
+  *without* IDE CDROM drive (ATAPI) support.  If native ATAPI support is
+  enabled, the kernel will always choose to use the native ATAPI driver.
+
+Missing Features:
+==================
+
+Specifically, 'cdparanoia' will not play to sound cards, do MD5
+signatures, do rate reduction, or generally make use of the maximum
+speed available from a CDROM drive.  If your CDROM drive is *not*
+prone to jitter and you don't have scratched discs to worry about,
+look into Heiko's original cdda2wav.
+
+Troubleshooting
+===============
+
+lots o' stuff on the website.
+
+Contacts
+========
+
+The user and troubleshooting mailing list is paranoia@xiph.org.  The main distribution site
+for cdparanoia (and the original Paranoia patches to cdda2wav) is
+http://www.xiph.org/paranoia/
+
+Happy hunting.  Be nice to copyrights.
+
+Monty
+

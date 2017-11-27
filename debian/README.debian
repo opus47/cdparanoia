@@ -1,0 +1,7 @@
+cdparanoia for DEBIAN
+----------------------
+
+Cdparanoia was extremely easy to Debianize.  Thanks, Monty, for a job well done
+with configure scripts and so forth.
+
+Dale E. Martin <dmartin@debian.org>, Sat, 16 May 1998 19:01:53 -0400

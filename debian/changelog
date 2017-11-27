@@ -1,0 +1,171 @@
+cdparanoia (3a10.2-1) unstable; urgency=high
+
+  * SG_IO support
+  * Significant drive cache modelling/handling upgrade: 
+    REQUIRED FOR CORRECTNESS on many modern cdrom drives
+  * Built-in offline drive analysis and testing 
+	
+ -- Monty <monty@xiph.org>  Thu, 11 Sep 2008 17:20:00 -0500
+
+cdparanoia (3a9.8-1) unstable; urgency=low
+
+  * general updates for new kernel series
+
+ -- Monty <monty@xiph.org>  Tue, 27 Mar 2001 14:39:12 -0800
+
+cdparanoia (3a9.7-2) unstable; urgency=low
+
+  * Added cdparanoia/utils.h to the dev-package.
+  * Removed -p from the install flags of the Makefile.
+  * Switch all packages to use dh_installdocs in an attempt to get rid
+  of lintian warnings.
+
+ -- Dale E. Martin <dmartin@debian.org>  Wed, 22 Dec 1999 07:01:49 -0500
+
+cdparanoia (3a9.7-1) unstable; urgency=low
+
+  * New upstream source.
+
+ -- Dale E. Martin <dmartin@debian.org>  Thu, 16 Dec 1999 22:17:56 -0500
+
+cdparanoia (3a9.6-3) unstable; urgency=low
+
+  * Removed obsolete dir /usr/man and replaced with /usr/share/man.
+
+ -- Dale E. Martin <dmartin@debian.org>  Thu, 16 Dec 1999 22:17:37 -0500
+
+cdparanoia (3a9.6-2) unstable; urgency=low
+
+  * Rebuilt with updated debhelper tools.  Had to tweak the "rules"
+    file for /usr/share/doc, too.
+
+ -- Dale E. Martin <dmartin@debian.org>  Fri, 10 Sep 1999 08:32:16 -0400
+
+cdparanoia (3a9.6-1) unstable; urgency=low
+
+  * New upstream source.  Handles newer 2.3 kernels.
+  * Updated web site info.
+
+ -- Dale E. Martin <dmartin@debian.org>  Fri, 10 Sep 1999 08:32:00 -0400
+
+cdparanoia (3a9.5-9) unstable; urgency=low
+
+  * Rebuild with source included.  I messed up the upload somehow.
+
+ -- Dale E. Martin <dmartin@debian.org>  Sat, 14 Aug 1999 15:03:33 -0400
+
+cdparanoia (3a9.5-8) unstable; urgency=low
+
+  * Some style type fixes recommended by Darren Stalder.
+  * Fixed a problem in the Makefile causing problems for building for some 
+    users.
+
+ -- Dale E. Martin <dmartin@debian.org>  Wed, 11 Aug 1999 14:34:38 -0400
+
+cdparanoia (3a9.5-7) unstable; urgency=low
+
+  * OK, so I totally screwed up my attempt at the doc dir fix.  Hopefully
+    this one is better...
+
+ -- Dale E. Martin <dmartin@debian.org>  Tue, 10 Aug 1999 19:33:14 -0400
+
+cdparanoia (3a9.5-6) unstable; urgency=low
+  
+  * Fixed some lintian warnings and errors caught with the newer lintian.
+  * When the cdparanoia's old doc dir got converted to a link, it
+    appears that dpkg didn't deal with it.  So I added a preinst
+    to get rid of it.
+
+ -- Dale E. Martin <dmartin@debian.org>  Mon,  9 Aug 1999 08:30:23 -0400
+
+cdparanoia (3a9.5-5) unstable; urgency=low
+
+  * Updated standards version to 3.0.0.0.
+  * Removed CVS dirs from source package.
+  * Added "Conflicts" for outdated package names.
+
+ -- Dale E. Martin <dmartin@debian.org>  Sun,  1 Aug 1999 20:26:01 -0400
+
+cdparanoia (3a9.5-4) unstable; urgency=low
+
+  * Fixed several more packaging problems.
+  * Renamed cdparanoia-bin back to cdparanoia to make upgrades smooth.
+  * Renamed libcdparanoia to libcdparanoia0
+  * Renamed libcdparanoia-dev to libcdparanoia0-dev
+  * Modified Makefiles to generate soname info in shared libraries.
+
+ -- Dale E. Martin <dmartin@debian.org>  Tue, 13 Jul 1999 12:49:11 -0400
+
+cdparanoia (3a9.5-3) unstable; urgency=low
+
+  * At Dima Barsky's recommendation, split cdparanoia into the separate
+    binary packages, libcdparanoia, libcdparanoia-dev, and cdparanoia-bin.
+    Thanks to Dima for producing the initial packages making this change.
+    * Fixed the problem that cdparanoia was incorrectly packaged as though 
+    it was Debian native.
+
+ -- Dale E. Martin <dmartin@debian.org>  Fri,  2 Jul 1999 13:22:38 -0400
+
+cdparanoia (3a9.5-2) unstable; urgency=low
+
+  * Compiled and released against glibc2.1.
+
+ -- Dale E. Martin <dmartin@debian.org>  Sat, 12 Jun 1999 00:52:39 -0400
+
+cdparanoia (3a9.5-1) unstable; urgency=low
+
+  * New upstream source.
+
+ -- Dale E. Martin <dmartin@debian.org>  Mon, 29 Mar 1999 15:36:49 -0500
+
+cdparanoia (3a9.4-2) unstable; urgency=low
+
+  * Adding missing docs and other minor packaging updates.
+
+ -- Dale E. Martin <dmartin@debian.org>  Tue, 23 Mar 1999 15:33:05 -0500
+
+cdparanoia (3a9.4-1) unstable; urgency=low
+
+  * Includes patch (upstream) that allows reading of pregrap as track 0.
+  * Fixes bug 30140.
+  * New upstream source.
+
+ -- Dale E. Martin <dmartin@debian.org>  Thu, 17 Dec 1998 13:23:35 -0500
+
+cdparanoia (3a9.2-1) unstable; urgency=low
+
+  * New upstream source.
+
+ -- Dale E. Martin <dmartin@debian.org>  Thu, 19 Nov 1998 14:46:42 -0500
+
+cdparanoia (3a9-1) unstable; urgency=low
+
+  * New upstream source.
+
+ -- Dale E. Martin <dmartin@debian.org>  Thu, 22 Oct 1998 14:10:09 -0400
+
+cdparanoia (3a8-1) unstable; urgency=low
+
+  * New upstream source.
+
+ -- Dale E. Martin <dmartin@debian.org>  Tue, 25 Aug 1998 00:25:30 -0400
+
+cdparanoia (3a7-1) unstable; urgency=low
+
+  * New upstream source.
+  * Compiled against kernel headers 2.0.34, to workaround kernel bug
+    that was causing the old package to crash under kernels >= 2.0.34.
+
+ -- Dale E. Martin <dmartin@debian.org>  Thu, 16 Jul 1998 09:11:13 -0400
+
+cdparanoia (3a6-1) unstable; urgency=low
+
+  * This is my first Debian package
+  * Initial Release.
+
+ -- Dale E. Martin <dmartin@debian.org>  Sat, 16 May 1998 19:01:53 -0400
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address: "dmartin@debian.org"
+End:

@@ -1,0 +1,73 @@
+AC_INIT(interface/interface.c)
+
+VERSION="10.3pre" 
+AC_SUBST(VERSION) 
+
+cp $srcdir/configure.guess $srcdir/config.guess
+cp $srcdir/configure.sub $srcdir/config.sub
+
+AC_CANONICAL_HOST
+
+if test -z "$CC"; then
+	AC_PROG_CC	
+fi
+AC_PROG_RANLIB
+AC_CHECK_PROG(AR,ar,ar)
+AC_CHECK_PROG(INSTALL,install,install)
+
+if test -z "$GCC"; then
+	DEBUG="-g"
+	OPT="-O"
+else
+	case $host in 
+	i?86-*-linux*)
+		DEBUG="-g -Wall -fsigned-char"
+		OPT="-O2 -ffast-math -fsigned-char -finline-functions";;
+	*)
+		DEBUG="-g -Wall -fsigned-char"
+		OPT="-O2 -fsigned-char";;
+        esac
+fi
+
+AC_HEADER_STDC
+
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
+
+case 2 in
+	$ac_cv_sizeof_short) SIZE16="short";;
+	$ac_cv_sizeof_int) SIZE16="int";;
+esac
+
+case 4 in
+	$ac_cv_sizeof_short) SIZE32="short";;
+	$ac_cv_sizeof_int) SIZE32="int";;
+	$ac_cv_sizeof_long) SIZE32="long";;
+esac
+
+AC_CHECK_TYPE(int16_t,SIZE16="int16_t",,)
+AC_CHECK_TYPE(int32_t,SIZE32="size32_t",,)
+
+if test -z "$SIZE16"; then
+	AC_MSG_ERROR(No 16 bit type found on this platform!)
+fi
+if test -z "$SIZE32"; then
+	AC_MSG_ERROR(No 32 bit type found on this platform!)
+fi
+	
+AC_CHECK_HEADERS(linux/sbpcd.h, SBPCD_H="-DSBPCD_H='1' ")
+AC_CHECK_HEADERS(linux/ucdrom.h, UCDROM_H="-DUCDROM_H='1' ")
+
+AC_PROG_MAKE_SET
+AC_C_CONST
+
+AC_SUBST(SBPCD_H)
+AC_SUBST(UCDROM_H)
+AC_SUBST(TYPESIZES)
+AC_SUBST(OPT)
+AC_SUBST(DEBUG)
+AC_SUBST(CC)
+
+AC_OUTPUT(Makefile interface/Makefile paranoia/Makefile cdparanoia-3.pc)

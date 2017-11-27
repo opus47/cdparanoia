@@ -1,0 +1,1 @@
+shlibs:Depends=libc6 (>= 2.1), libcdparanoia0 (>= 3a10.2-1)

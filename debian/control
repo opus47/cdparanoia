@@ -1,0 +1,36 @@
+Source: cdparanoia
+Section: sound
+Priority: optional
+Maintainer: Dale E. Martin <dmartin@debian.org>
+Standards-Version: 3.0.0.0
+
+Package: libcdparanoia0
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: libcdparanoia
+Replaces: libcdparanoia
+Description: Shared libraries for cdparanoia (runtime lib)
+ An audio extraction tool for sampling CDs.  Unlike similar programs such
+ as cdda2wav, cdparanoia goes to great lengths to try to extract the audio
+ information without any artifacts such as jitter.
+
+Package: libcdparanoia0-dev
+Architecture: any
+Conflicts: libcdparanoia-dev
+Replaces: libcdparanoia-dev
+Depends: libc6-dev, libcdparanoia0 (= ${Source-Version})
+Description: Development files needed to compile programs that use libcdparanoia.
+ An audio extraction tool for sampling CDs.  Unlike similar programs such
+ as cdda2wav, cdparanoia goes to great lengths to try to extract the audio
+ information without any artifacts such as jitter.
+
+Package: cdparanoia
+Architecture: any
+Conflicts: cdparanoia-bin
+Replaces: cdparanoia-bin
+Depends: libcdparanoia0 (= ${Source-Version})
+Description: An audio extraction tool for sampling CDs.  
+ Unlike similar programs such as cdda2wav, cdparanoia goes to great lengths
+ to try to extract the audio information without any artifacts such as
+ jitter.
+

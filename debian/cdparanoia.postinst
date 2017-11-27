@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# The whole point of this postinst is to work around a dpkg bug.  When
+# an old version of cdparanoia (before the split) was installed, the
+# docs were in /usr/doc/cdparanoia.  This package contains only a link
+# for /usr/doc/cdparanoia, to /usr/doc/libcdparanoia.  Dpkg seems to
+# not remove the directory, and the link doesn't get installed.  We'll
+# look for that condition, remove the directory if it's there, and then
+# make the link here.  It's part of the package, so it shouldn't hurt
+# anything to put it in if dpkg didn't.
+
+set -e
+
+OLDDOCDIR=/usr/doc/cdparanoia
+
+if [ -d $OLDDOCDIR ]; then
+    if [ ! -L $OLDDOCDIR ]; then
+	rmdir $OLDDOCDIR || exit -1  # Go ahead and fail if something bad happened.
+	cd /usr/doc
+	ln -s libcdparanoia0 cdparanoia
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0
