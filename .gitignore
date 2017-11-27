@@ -7,3 +7,7 @@ configure
 *.a
 *.o
 *.sw*
+*.so.*
+*.so
+*.guess
+*.sub
